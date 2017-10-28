@@ -1,0 +1,11 @@
+OpenWindow="Memory1", DockArea=RIGHT, x=0, y=1, w=359, h=527, FilterBarShown=0, 
+OpenWindow="Registers", DockArea=RIGHT, x=0, y=0, w=359, h=528, FilterBarShown=0, 
+OpenWindow="Console", DockArea=BOTTOM, x=1, y=0, w=1497, h=816, FilterBarShown=0, 
+OpenWindow="Watched Data", DockArea=BOTTOM, x=0, y=0, w=1502, h=816, FilterBarShown=0, 
+OpenWindow="Functions", DockArea=LEFT, x=0, y=1, w=357, h=527, FilterBarShown=1, 
+OpenWindow="Source Files", DockArea=LEFT, x=0, y=0, w=357, h=528, FilterBarShown=1, 
+OpenToolbar="Debug", Floating=0, x=0, y=0
+TableHeader="Registers", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Value";"Description"], ColWidths=[150;210;392]
+TableHeader="Watched Data", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Size";"Refresh";"Type"], ColWidths=[160;144;144;94;127;833]
+TableHeader="Functions", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Address";"Size";"#Insts";"Source"], ColWidths=[60;45;42;29;348]
+TableHeader="Source Files", SortCol="File", SortOrder="ASCENDING", VisibleCols=["File";"Status";"Address";"Size";"#Insts";"Path"], ColWidths=[285;116;131;94;116;1052]
