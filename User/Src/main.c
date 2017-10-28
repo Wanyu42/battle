@@ -132,6 +132,15 @@ int main(void)
 				switch(RC_Ctl.rc.s1){
 					
 						case 1: //run the car
+									hcan2.pTxMsg->Data[0]=0>>8;
+									hcan2.pTxMsg->Data[1]=0;
+									hcan2.pTxMsg->StdId = 0x200;
+									hcan2.pTxMsg->IDE = CAN_ID_STD;
+									hcan2.pTxMsg->RTR = CAN_RTR_DATA;
+									hcan2.pTxMsg->DLC = 0x08;
+
+									HAL_CAN_Transmit(&hcan2, 10);
+						
 									if(RC_Ctl.rc.s2 == 1){multiples = 1;}
 									else if(RC_Ctl.rc.s2 == 3){multiples = 2;}
 									else if(RC_Ctl.rc.s2 == 2){multiples = 3;}
@@ -139,6 +148,31 @@ int main(void)
 									break;
 						
 						case 2: //use the GPIO to control the pnuematic
+									hcan2.pTxMsg->Data[0]=0>>8;
+									hcan2.pTxMsg->Data[1]=0;
+									hcan2.pTxMsg->StdId = 0x200;
+									hcan2.pTxMsg->IDE = CAN_ID_STD;
+									hcan2.pTxMsg->RTR = CAN_RTR_DATA;
+									hcan2.pTxMsg->DLC = 0x08;
+
+									HAL_CAN_Transmit(&hcan2, 10);
+						
+									hcan1.pTxMsg->Data[0]=0>>8;
+									hcan1.pTxMsg->Data[1]=0;
+									hcan1.pTxMsg->Data[2]=0>>8;
+									hcan1.pTxMsg->Data[3]=0;
+									hcan1.pTxMsg->Data[4]=0>>8;
+									hcan1.pTxMsg->Data[5]=0;
+									hcan1.pTxMsg->Data[6]=0>>8;
+									hcan1.pTxMsg->Data[7]=0;
+
+									hcan1.pTxMsg->StdId = 0x200;
+									hcan1.pTxMsg->IDE = CAN_ID_STD;
+									hcan1.pTxMsg->RTR = CAN_RTR_DATA;
+									hcan1.pTxMsg->DLC = 0x08;
+
+									HAL_CAN_Transmit(&hcan1, 10);
+						
 									if(RC_Ctl.rc.s2 == 1){
 											HAL_GPIO_WritePin(GPIOA,GPIO_PIN_0,GPIO_PIN_SET);
 										}
@@ -146,6 +180,22 @@ int main(void)
 									break;
 									
 						case 3: //run the motor of pnuematic
+									hcan1.pTxMsg->Data[0]=0>>8;
+									hcan1.pTxMsg->Data[1]=0;
+									hcan1.pTxMsg->Data[2]=0>>8;
+									hcan1.pTxMsg->Data[3]=0;
+									hcan1.pTxMsg->Data[4]=0>>8;
+									hcan1.pTxMsg->Data[5]=0;
+									hcan1.pTxMsg->Data[6]=0>>8;
+									hcan1.pTxMsg->Data[7]=0;
+
+									hcan1.pTxMsg->StdId = 0x200;
+									hcan1.pTxMsg->IDE = CAN_ID_STD;
+									hcan1.pTxMsg->RTR = CAN_RTR_DATA;
+									hcan1.pTxMsg->DLC = 0x08;
+
+									HAL_CAN_Transmit(&hcan1, 10);
+						
 									drive_pneumatic(RC_Ctl.rc.channel3);
 									break;
 				}

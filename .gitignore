@@ -110,3 +110,4 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 MDK-ARM/battlebots_regen
+*.TMP

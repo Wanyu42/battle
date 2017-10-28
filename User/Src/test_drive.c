@@ -22,10 +22,10 @@
 #include "test_DBUS.h"
 #include "chassis_motors.h"
 
-int16_t front_right;
-int16_t back_right;
-int16_t front_left;
-int16_t back_left;
+int32_t front_right;
+int32_t back_right;
+int32_t front_left;
+int32_t back_left;
 int16_t ltr_front_right;
 int16_t ltr_back_right;
 int16_t ltr_front_left;
@@ -49,12 +49,12 @@ void drive_kinematics(int RX_X2, int RX_Y1, int RX_X1, int multiple)
     back_left = (-1*drive - strafe + rotate) + rotate_feedback;     // CAN1 ID: 0x204
 	
     //Update using CAN bus chassis function (provided by Alex Wong)
-		ltr_front_right = PID_Control((float)CM1Encoder.velocity_from_ESC,0.1*multiple*front_right,&pid_motors);
-	  ltr_back_right = PID_Control((float)CM2Encoder.velocity_from_ESC,0.1*multiple*back_right,&pid_motors);
-    ltr_front_left = PID_Control((float)CM3Encoder.velocity_from_ESC,0.1*multiple*front_left,&pid_motors);
-		ltr_back_left = PID_Control((float)CM4Encoder.velocity_from_ESC,0.1*multiple*back_left,&pid_motors);
+		ltr_front_right = PID_Control((float)CM1Encoder.velocity_from_ESC,0.1*multiple*front_right,&pid_motors,0);
+	  ltr_back_right = PID_Control((float)CM2Encoder.velocity_from_ESC,0.1*multiple*back_right,&pid_motors,1);
+    ltr_front_left = PID_Control((float)CM3Encoder.velocity_from_ESC,0.1*multiple*front_left,&pid_motors,2);
+		ltr_back_left = PID_Control((float)CM4Encoder.velocity_from_ESC,0.1*multiple*back_left,&pid_motors,3);
 		
-    Chassis1_Set_Speed(ltr_front_right, ltr_back_right, ltr_front_left, ltr_back_left);
+    Chassis1_Set_Speed(ltr_front_right/4, ltr_back_right/4, ltr_front_left/4, ltr_back_left/4);
 }
 
 void drive_pneumatic(int RX_Y2)
@@ -63,8 +63,8 @@ void drive_pneumatic(int RX_Y2)
 		int16_t updown = (int16_t)map(RX_Y2, RC_CH_VALUE_MIN, RC_CH_VALUE_MAX, RPM_MIN, RPM_MAX);
     // For later coordinate with Gimbal
 	  up_down = updown; //CAN2 ID: 0X201
-		up_down_position = PID_Control((float)CM5Encoder.position_raw_value,0.1*up_down,&pid_position);
-		up_down_velocity = PID_Control((float)CM5Encoder.velocity_from_ESC,up_down_position,&pid_velocity);
+		up_down_position = PID_Control((float)CM5Encoder.position_raw_value,0.1*up_down,&pid_position,4);
+		up_down_velocity = PID_Control((float)CM5Encoder.velocity_from_ESC,up_down_position,&pid_velocity,5);
     //Update using CAN bus chassis function (provided by Alex Wong)
 		Chassis2_Set_Speed(up_down_velocity);
 }

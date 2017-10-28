@@ -37,6 +37,7 @@ typedef struct {
 		float kd; //direvative
 		float GAP;
 		float	ESC_Max;
+		float inte_Max;
 		int8_t sign;
 }PID_Regulator_t;
 extern PID_Regulator_t pid_motors;
@@ -63,7 +64,7 @@ void encoderProcess(volatile Encoder*, CanRxMsgTypeDef*);
 void Chassis1_Set_Speed(int16_t, int16_t, int16_t, int16_t);
 void Chassis2_Set_Speed(int16_t);
 void CAN_Send_Msg(CAN_HandleTypeDef* hcan, uint8_t *msg, uint32_t id);
-int16_t PID_Control(float measured,float target,PID_Regulator_t * pid);
+int16_t PID_Control(float measured,float target,PID_Regulator_t * pid,int8_t address);
 
 #endif
 

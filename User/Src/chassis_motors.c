@@ -22,9 +22,9 @@ volatile Encoder CM5Encoder = {0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // CAN2 Address 201
 
 uint32_t can_chassis_count[4] = {0, 0, 0, 0};
 
-PID_Regulator_t pid_motors = {2.8,0.0,0.0,0.1,4000.0,1};
-PID_Regulator_t pid_position = {2.8,0.0,0.0,0.1,4000.0,1};
-PID_Regulator_t pid_velocity = {2.8,0.0,0.0,0.1,4000.0,1};
+PID_Regulator_t pid_motors = {15.0,1.0,0.0,0.1,7000.0,500.0,1};
+PID_Regulator_t pid_position = {2.8,0.0,0.0,0.1,4000.0,10.0,1};
+PID_Regulator_t pid_velocity = {2.8,0.0,0.0,0.1,4000.0,10.0,1};
 
 /*
  * can filter must be initialized before use
@@ -192,18 +192,20 @@ void CAN_Send_Msg(CAN_HandleTypeDef* hcan, uint8_t *msg, uint32_t id)
     HAL_CAN_Transmit(hcan, 10);
 }
 //PID controller
-int16_t PID_Control(float measured,float target,PID_Regulator_t * pid){
+int16_t PID_Control(float measured,float target,PID_Regulator_t * pid, int8_t address){
 		static float error_v[2]={0.0,0.0};
 		static float output = 0;
-		static float inte = 0;
+		static float inte[6] = {0,0,0,0,0,0};
 		
 		if(fabs(measured) < pid->GAP){measured = 0.0;}
 		
 		error_v[0] = error_v[1];
 		error_v[1] = target - measured;
-		inte += error_v[1];
+		inte[address] += error_v[1];
+		if(inte[address] > pid->inte_Max){inte[address] = pid->inte_Max;}
+		if(inte[address] < -pid->inte_Max){inte[address] = -pid->inte_Max;}		
 		
-		output = error_v[1] * pid->kp + inte * pid->ki + (error_v[1]-error_v[0])*pid->kd;
+		output = error_v[1] * pid->kp + inte[address] * pid->ki + (error_v[1]-error_v[0])*pid->kd;
 		output = output * pid->sign;
 		
 		if(output > pid->ESC_Max){output = pid->ESC_Max;}
