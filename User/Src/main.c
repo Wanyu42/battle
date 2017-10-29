@@ -121,6 +121,7 @@ int main(void)
     /* USER CODE END 2 */ 
 		int i = 0;
 		int multiples;
+		int16_t up_down_velocity;
     /* Infinite loop */ 
     /* USER CODE BEGIN WHILE */ 
     while (1) { 
@@ -140,6 +141,10 @@ int main(void)
 									hcan2.pTxMsg->DLC = 0x08;
 
 									HAL_CAN_Transmit(&hcan2, 10);
+						
+									up_down_velocity = PID_Control((float)CM5Encoder.velocity_ecd_raw,0.0,&pid_velocity,5);
+									Chassis2_Set_Speed(up_down_velocity);
+
 						
 									if(RC_Ctl.rc.s2 == 1){multiples = 1;}
 									else if(RC_Ctl.rc.s2 == 3){multiples = 2;}
@@ -195,8 +200,19 @@ int main(void)
 									hcan1.pTxMsg->DLC = 0x08;
 
 									HAL_CAN_Transmit(&hcan1, 10);
-						
-									drive_pneumatic(RC_Ctl.rc.channel3);
+									if(RC_Ctl.rc.s2 == 1){
+											hcan2.pTxMsg->Data[0]=0>>8;
+											hcan2.pTxMsg->Data[1]=0;
+											hcan2.pTxMsg->StdId = 0x200;
+											hcan2.pTxMsg->IDE = CAN_ID_STD;
+											hcan2.pTxMsg->RTR = CAN_RTR_DATA;
+											hcan2.pTxMsg->DLC = 0x08;
+
+											HAL_CAN_Transmit(&hcan2, 10);
+									}
+									else{
+											drive_pneumatic(RC_Ctl.rc.channel3);
+									}
 									break;
 				}
 				

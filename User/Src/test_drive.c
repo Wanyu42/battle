@@ -30,7 +30,8 @@ int16_t ltr_front_right;
 int16_t ltr_back_right;
 int16_t ltr_front_left;
 int16_t ltr_back_left;
-int16_t up_down;
+
+int32_t up_down;
 int16_t up_down_position;
 int16_t up_down_velocity;
 
@@ -63,12 +64,9 @@ void drive_pneumatic(int RX_Y2)
 		int16_t updown = (int16_t)map(RX_Y2, RC_CH_VALUE_MIN, RC_CH_VALUE_MAX, RPM_MIN, RPM_MAX);
     // For later coordinate with Gimbal
 	  up_down = updown; //CAN2 ID: 0X201
-		up_down_position = PID_Control((float)CM5Encoder.position_raw_value,0.1*up_down,&pid_position,4);
+		up_down_position = PID_Control(0.0001*(float)CM5Encoder.ecd_angle,0.01*up_down,&pid_position,4);
 		up_down_velocity = PID_Control((float)CM5Encoder.velocity_from_ESC,up_down_position,&pid_velocity,5);
+		//up_down_velocity = PID_Control((float)CM5Encoder.velocity_from_ESC,0.1*up_down,&pid_velocity,4);
     //Update using CAN bus chassis function (provided by Alex Wong)
 		Chassis2_Set_Speed(up_down_velocity);
-}
-float map(float x, float in_min, float in_max, float out_min, float out_max)
-{
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

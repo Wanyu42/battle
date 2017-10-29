@@ -13,7 +13,12 @@
 #define TEST_CAN1_ID    0x201
 #define TEST_CAN2_ID    0x202
 
+#define RPM_MAX    ((int16_t) 32767)
+#define RPM_MIN    ((int16_t)-32768)
+
+#define RADIAN_CIRCLE 6283
 #define ENCODER_RATE_BUF_SIZE 3
+#define ENCODER_MAX 8172;
 typedef struct {
     int16_t velocity_from_ESC;
     int16_t position_raw_value;
@@ -65,6 +70,7 @@ void Chassis1_Set_Speed(int16_t, int16_t, int16_t, int16_t);
 void Chassis2_Set_Speed(int16_t);
 void CAN_Send_Msg(CAN_HandleTypeDef* hcan, uint8_t *msg, uint32_t id);
 int16_t PID_Control(float measured,float target,PID_Regulator_t * pid,int8_t address);
+float map(float x, float in_min, float in_max, float out_min, float out_max);
 
 #endif
 

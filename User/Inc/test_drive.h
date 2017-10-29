@@ -10,13 +10,18 @@
 
 #include "stm32f4xx_HAL.h"
 
+#ifndef RPM_MAX
 #define RPM_MAX    ((int16_t) 32767)
+#endif
+
+#ifndef RPM_MIN
 #define RPM_MIN    ((int16_t)-32768)
+#endif
 
 // Drive function, takes RC joystic values as imput
 void drive_kinematics(int, int, int, int);
 void drive_pneumatic(int);
 
 // Map range-A to range-B, used to set correct RPM
-float map(float x, float in_min, float in_max, float out_min, float out_max);
+
 #endif /* __TEST__DRIVE_H */

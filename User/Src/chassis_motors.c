@@ -8,7 +8,8 @@
 #include "can.h"
 #include "arm_math.h"
 #include "chassis_motors.h"
-
+#include <stdlib.h>
+#include "test_DBUS.h"
   
 uint8_t can1_rx_data[8];
 uint8_t can2_rx_data[8];
@@ -23,8 +24,8 @@ volatile Encoder CM5Encoder = {0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // CAN2 Address 201
 uint32_t can_chassis_count[4] = {0, 0, 0, 0};
 
 PID_Regulator_t pid_motors = {15.0,1.0,0.0,0.1,7000.0,500.0,1};
-PID_Regulator_t pid_position = {2.8,0.0,0.0,0.1,4000.0,10.0,1};
-PID_Regulator_t pid_velocity = {2.8,0.0,0.0,0.1,4000.0,10.0,1};
+PID_Regulator_t pid_velocity = {3.8,0.0,0.0,0.1,4000.0,10.0,1};
+PID_Regulator_t pid_position = {40.0,0.1,0.0,0.1,9000.0,500.0,-1};
 
 /*
  * can filter must be initialized before use
@@ -143,6 +144,13 @@ void encoderProcess(volatile Encoder* ecd, CanRxMsgTypeDef* msg)
     // Bitwise OR operation to extract the 16-bit information
     ecd->velocity_from_ESC  = (msg->Data[2] << 8) | msg->Data[3];
     ecd->position_raw_value = (msg->Data[0] << 8) | msg->Data[1];
+		ecd->position_diff = ecd->position_raw_value - ecd->position_raw_value_last;
+		if(ecd->position_diff >7500){ecd->round_count++;}
+		else if(ecd->position_diff < -7500){ecd->round_count--;}
+		
+		ecd->position_ecd_value = ecd->position_raw_value + ecd->round_count * ENCODER_MAX;
+		ecd->position_ecd_bias = (int32_t)map(0, RC_CH_VALUE_MIN, RC_CH_VALUE_MAX, RPM_MIN, RPM_MAX);
+		ecd->ecd_angle = ecd->round_count*RADIAN_CIRCLE + (float)abs(ecd->position_raw_value - ecd->position_ecd_bias)*RADIAN_CIRCLE/ENCODER_MAX;
 }
 
 /*
@@ -212,4 +220,9 @@ int16_t PID_Control(float measured,float target,PID_Regulator_t * pid, int8_t ad
 		if(output < -pid->ESC_Max){output = -pid->ESC_Max;}
 		
 		return (int16_t)output;
+}
+
+float map(float x, float in_min, float in_max, float out_min, float out_max)
+{
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
