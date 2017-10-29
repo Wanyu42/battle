@@ -142,9 +142,7 @@ int main(void)
 
 									HAL_CAN_Transmit(&hcan2, 10);
 						
-									up_down_velocity = PID_Control((float)CM5Encoder.velocity_ecd_raw,0.0,&pid_velocity,5);
-									Chassis2_Set_Speed(up_down_velocity);
-
+									drive_pneumatic(RC_CH_VALUE_OFFSET);
 						
 									if(RC_Ctl.rc.s2 == 1){multiples = 1;}
 									else if(RC_Ctl.rc.s2 == 3){multiples = 2;}
