@@ -25,7 +25,9 @@ uint32_t can_chassis_count[4] = {0, 0, 0, 0};
 
 PID_Regulator_t pid_motors = {15.0,1.0,0.0,0.1,7000.0,500.0,1};
 PID_Regulator_t pid_velocity = {3.8,0.0,0.0,0.1,4000.0,10.0,1};
-PID_Regulator_t pid_position = {40.0,0.1,0.0,0.1,9000.0,500.0,-1};
+PID_Regulator_t pid_position = {40.0,0.1,20000.0,0.1,9000.0,500.0,-1};
+PID_Regulator_t pid_front_right = {20.0,0.15,0.0,0.07,7000.0,500.0,1};
+PID_Regulator_t pid_back_right = {18.0,0.15,0.0,0.1,7000.0,500.0,1};
 
 /*
  * can filter must be initialized before use
@@ -220,6 +222,28 @@ int16_t PID_Control(float measured,float target,PID_Regulator_t * pid, int8_t ad
 		if(output < -pid->ESC_Max){output = -pid->ESC_Max;}
 		
 		return (int16_t)output;
+}
+
+int16_t PID_pos_Control(float measured,float target,PID_Regulator_t * pid){
+		static float error_v_pos[2]={0.0,0.0};
+		static float output_pos = 0;
+		static float inte_pos = 0;
+		
+		if(fabs(measured) < pid->GAP){measured = 0.0;}
+		
+		error_v_pos[0] = error_v_pos[1];
+		error_v_pos[1] = target - measured;
+		inte_pos += error_v_pos[1];
+		if(inte_pos > pid->inte_Max){inte_pos = pid->inte_Max;}
+		if(inte_pos < -pid->inte_Max){inte_pos = -pid->inte_Max;}		
+		
+		output_pos = error_v_pos[1] * pid->kp + inte_pos * pid->ki + (error_v_pos[1]-error_v_pos[0])*pid->kd;
+		output_pos = output_pos * pid->sign;
+		
+		if(output_pos > pid->ESC_Max){output_pos = pid->ESC_Max;}
+		if(output_pos < -pid->ESC_Max){output_pos = -pid->ESC_Max;}
+		
+		return (int16_t)output_pos;
 }
 
 float map(float x, float in_min, float in_max, float out_min, float out_max)

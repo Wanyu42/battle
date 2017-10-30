@@ -133,14 +133,14 @@ int main(void)
 				switch(RC_Ctl.rc.s1){
 					
 						case 1: //run the car
-									hcan2.pTxMsg->Data[0]=0>>8;
+									/*hcan2.pTxMsg->Data[0]=0>>8;
 									hcan2.pTxMsg->Data[1]=0;
 									hcan2.pTxMsg->StdId = 0x200;
 									hcan2.pTxMsg->IDE = CAN_ID_STD;
 									hcan2.pTxMsg->RTR = CAN_RTR_DATA;
 									hcan2.pTxMsg->DLC = 0x08;
 
-									HAL_CAN_Transmit(&hcan2, 10);
+									HAL_CAN_Transmit(&hcan2, 10);*/
 						
 									drive_pneumatic(RC_CH_VALUE_OFFSET);
 						
@@ -151,14 +151,15 @@ int main(void)
 									break;
 						
 						case 2: //use the GPIO to control the pnuematic
-									hcan2.pTxMsg->Data[0]=0>>8;
+									/*hcan2.pTxMsg->Data[0]=0>>8;
 									hcan2.pTxMsg->Data[1]=0;
 									hcan2.pTxMsg->StdId = 0x200;
 									hcan2.pTxMsg->IDE = CAN_ID_STD;
 									hcan2.pTxMsg->RTR = CAN_RTR_DATA;
 									hcan2.pTxMsg->DLC = 0x08;
 
-									HAL_CAN_Transmit(&hcan2, 10);
+									HAL_CAN_Transmit(&hcan2, 10);*/
+									drive_pneumatic(RC_CH_VALUE_OFFSET);
 						
 									hcan1.pTxMsg->Data[0]=0>>8;
 									hcan1.pTxMsg->Data[1]=0;
@@ -198,7 +199,7 @@ int main(void)
 									hcan1.pTxMsg->DLC = 0x08;
 
 									HAL_CAN_Transmit(&hcan1, 10);
-									if(RC_Ctl.rc.s2 == 1){
+									if(RC_Ctl.rc.s2 == 2){
 											hcan2.pTxMsg->Data[0]=0>>8;
 											hcan2.pTxMsg->Data[1]=0;
 											hcan2.pTxMsg->StdId = 0x200;

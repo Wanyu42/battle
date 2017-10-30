@@ -48,6 +48,8 @@ typedef struct {
 extern PID_Regulator_t pid_motors;
 extern PID_Regulator_t pid_position;
 extern PID_Regulator_t pid_velocity;
+extern PID_Regulator_t pid_front_right;
+extern PID_Regulator_t pid_back_right;
 
 //typedef struct {
 //    Encoder ecd;
@@ -70,6 +72,7 @@ void Chassis1_Set_Speed(int16_t, int16_t, int16_t, int16_t);
 void Chassis2_Set_Speed(int16_t);
 void CAN_Send_Msg(CAN_HandleTypeDef* hcan, uint8_t *msg, uint32_t id);
 int16_t PID_Control(float measured,float target,PID_Regulator_t * pid,int8_t address);
+int16_t PID_pos_Control(float measured,float target,PID_Regulator_t * pid);
 float map(float x, float in_min, float in_max, float out_min, float out_max);
 
 #endif
